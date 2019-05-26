@@ -1,0 +1,26 @@
+{
+  "name": "teadstest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berengers/TeadsTest.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/berengers/TeadsTest/issues"
+  },
+  "homepage": "https://github.com/berengers/TeadsTest#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "dirty-chai": "^2.0.1",
+    "jest": "^24.8.0"
+  }
+}
