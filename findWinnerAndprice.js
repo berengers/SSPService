@@ -1,93 +1,97 @@
-const findWinnerAndprice = (buyersBids, reservePrice) => {
+const FIRST_PRICE = "FIRST_PRICE"
+const SECOND_PRICE = "SECOND_PRICE"
 
-  if (!buyersBids || !reservePrice) {
-    throw new TypeError(`Missing argument: ${!buyersBids ? 'buyersBids ':''}${!reservePrice ? 'reservePrice':''}`);
-  }
-
-  if (reservePrice <= 0) {
-    throw new TypeError(`The reserve price must have to be above 0 not ${reservePrice}`)
-  }
-
+const findTwoBestAuctions = (buyersBids, floorPrice) => {
   if (buyersBids.length === 0) {
-    return {
-      "error": "no buyer"
-    }
-  }
-  
-  const highestPrices = findValidHighestPrices(buyersBids, reservePrice)
-  
-  if (highestPrices.length === 0) {
-    return {
-      "error": "every buyers are under the reserve price"
-    }
+    return null
   }
 
-  if (highestPrices.length === 1) {
-    return {
-      "id": highestPrices[0].id,
-      "bid": reservePrice
-    }
+  let bestBid = {
+    buyerId: null,
+    bid: 0
   }
 
-  highestPrices.sort((a, b) => {
-    if (a.bid < b.bid)
-      return 1
-    else if (a.bid > b.bid)
-      return -1
-    else
-      return Math.round(Math.random()) === 0 ? -1 : 1
+  let secondBestBid = {
+    buyerId: null,
+    bid: 0
+  }
+
+  buyersBids.forEach(buyer => {
+    buyer.bids.forEach(price => {
+      if (price < floorPrice) {
+        return
+      }
+      
+      if (price > bestBid.bid) {
+
+        if (buyer.buyerId !== bestBid.buyerId) {
+          secondBestBid = bestBid
+        }
+
+        bestBid = { buyerId: buyer.buyerId, bid: price }
+      } 
+      else if (price > secondBestBid.bid) {
+        secondBestBid = { buyerId: buyer.buyerId, bid: price }
+      }
+    })
   })
 
-
-  return {
-    "id": highestPrices[0].id,
-    "bid": highestPrices[1].bid
+  if (bestBid.buyerId === null) {
+    return null
   }
+
+  if (secondBestBid.bid === 0) {
+    secondBestBid = { buyerId: null, bid: floorPrice }
+  }
+
+  return [bestBid, secondBestBid]
 }
 
-const findValidHighestPrices = (buyersBids, reservePrice) => {
-  const highestPrices = []
+const findBuyerAndWinningPrice = (auctionType, buyersBids, floorPrice) => {
+  const [firstPrice, secondPrice] = findTwoBestAuctions(buyersBids, floorPrice) || []
 
-  for (let index = 0; index < buyersBids.length; index++) {
-
-    if (buyersBids[index].bids.length === 0) {
-      continue
-    }
-
-    const buyer = buyersBids[index];
-    const highestPrice = Math.max(...buyer.bids)
-
-    if (isNaN(highestPrice) || highestPrice < reservePrice) {
-      continue
-    }
-
-    highestPrices.push({
-      "id": buyer.id,
-      "bid": highestPrice
-    })
+  if (firstPrice === undefined) {
+    return null
   }
 
-  return highestPrices
+  const buyerAndPrice = { buyerId: firstPrice.buyerId }
+
+  if (auctionType === FIRST_PRICE) {
+    buyerAndPrice.bid = firstPrice.bid
+  }
+  else if (auctionType === SECOND_PRICE) {
+    buyerAndPrice.bid = secondPrice.bid
+  }
+  else {
+    throw new TypeError(`This pricing mode is not compatible\n auctionType: ${auctionType}`)
+  }
+
+  return buyerAndPrice
 }
 
 
 module.exports = {
-  findWinnerAndprice,
-  findValidHighestPrices
+  findBuyerAndWinningPrice,
+  findTwoBestAuctions,
+  FIRST_PRICE,
+  SECOND_PRICE
 }
 
 
-// const buyersBids = [
-//   { "id": "A", "bids": [110, 130] },
-//   { "id": "B", "bids": [] },
-//   { "id": "C", "bids": [125] },
-//   { "id": "D", "bids": [105, 115, 90] },
-//   { "id": "E", "bids": [132, 135, 140] }
+// const usualBids = [
+//   { buyerId: "A", "bids": [110, 130] },
+//   { buyerId: "B", "bids": [] },
+//   { buyerId: "C", "bids": [125] },
+//   { buyerId: "D", "bids": [105, 115, 90] },
+//   { buyerId: "E", "bids": [132, 135, 140] }
 // ]
 
-// // E - 130
-// console.log(findWinnerAndprice(buyersBids, 100))
+// E - 130
+// console.log(findBuyerAndWinningPrice(SECOND_PRICE, usualBids, 100))
+// console.log(findBuyerAndWinningPrice(0, usualBids, 100))
+// console.log(findBuyerAndWinningPrice(2, usualBids, 100))
 // // Error because bids under reserved price
-// console.log(findWinnerAndprice(buyersBids, 1000))
+// console.log(findBuyerAndWinningPrice(usualBids, 1000))
 // // Error because no buyer
-// console.log(findWinnerAndprice([], 100))
+// console.log(findBuyerAndWinningPrice([], 100))
+// console.log()
