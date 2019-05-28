@@ -2,6 +2,11 @@ const FIRST_PRICE = "FIRST_PRICE"
 const SECOND_PRICE = "SECOND_PRICE"
 
 const findTwoBestAuctions = (buyersBids, floorPrice) => {
+
+  if (floorPrice === undefined) {
+    throw new Error()
+  }
+
   if (buyersBids.length === 0) {
     return null
   }
@@ -18,6 +23,7 @@ const findTwoBestAuctions = (buyersBids, floorPrice) => {
 
   buyersBids.forEach(buyer => {
     buyer.bids.forEach(price => {
+      
       if (price < floorPrice) {
         return
       }
@@ -33,6 +39,7 @@ const findTwoBestAuctions = (buyersBids, floorPrice) => {
       else if (price > secondBestBid.bid) {
         secondBestBid = { buyerId: buyer.buyerId, bid: price }
       }
+
     })
   })
 
@@ -63,7 +70,7 @@ const findBuyerAndWinningPrice = (auctionType, buyersBids, floorPrice) => {
     buyerAndPrice.bid = secondPrice.bid
   }
   else {
-    throw new TypeError(`This pricing mode is not compatible\n auctionType: ${auctionType}`)
+    throw new TypeError(`"${auctionType}" is not not an auction type valid`)
   }
 
   return buyerAndPrice
@@ -78,6 +85,8 @@ module.exports = {
 }
 
 
+// const wrongBids = [{ buyerId: "A", bids: [12, 35, "A", 150] }, { buyerId: "B", bids: [130] }]
+// console.log(findBuyerAndWinningPrice(SECOND_PRICE, wrongBids, 100))
 // const usualBids = [
 //   { buyerId: "A", "bids": [110, 130] },
 //   { buyerId: "B", "bids": [] },
@@ -86,6 +95,10 @@ module.exports = {
 //   { buyerId: "E", "bids": [132, 135, 140] }
 // ]
 
+// throw an error
+// console.log(findBuyerAndWinningPrice("third_price", usualBids, 100))
+//throw an error
+// console.log(findBuyerAndWinningPrice(SECOND_PRICE, usualBids))
 // E - 130
 // console.log(findBuyerAndWinningPrice(SECOND_PRICE, usualBids, 100))
 // console.log(findBuyerAndWinningPrice(0, usualBids, 100))
