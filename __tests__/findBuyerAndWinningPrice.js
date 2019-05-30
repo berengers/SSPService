@@ -1,6 +1,6 @@
 const expect = require('chai').expect
 
-const myMethods = require('./findBuyerAndWinningPrice');
+const myMethods = require('../findBuyerAndWinningPrice');
 const { findBuyerAndWinningPrice, findTwoBestAuctions, FIRST_PRICE, SECOND_PRICE } = myMethods
 
 
