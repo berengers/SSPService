@@ -29,11 +29,9 @@ const findTwoBestAuctions = (buyersBids, floorPrice) => {
       }
       
       if (price > bestBid.bid) {
-
         if (buyer.buyerId !== bestBid.buyerId) {
           secondBestBid = bestBid
         }
-
         bestBid = { buyerId: buyer.buyerId, bid: price }
       } 
       else if (price > secondBestBid.bid) {
@@ -61,19 +59,19 @@ const findBuyerAndWinningPrice = (auctionType, buyersBids, floorPrice) => {
     return null
   }
 
-  const buyerAndPrice = { buyerId: firstPrice.buyerId }
+  const buyerAndWinningPrice = { buyerId: firstPrice.buyerId }
 
   if (auctionType === FIRST_PRICE) {
-    buyerAndPrice.bid = firstPrice.bid
+    buyerAndWinningPrice.winningPrice = firstPrice.bid
   }
   else if (auctionType === SECOND_PRICE) {
-    buyerAndPrice.bid = secondPrice.bid
+    buyerAndWinningPrice.winningPrice = secondPrice.bid
   }
   else {
     throw new TypeError(`"${auctionType}" is not not an auction type valid`)
   }
 
-  return buyerAndPrice
+  return buyerAndWinningPrice
 }
 
 
@@ -83,28 +81,3 @@ module.exports = {
   FIRST_PRICE,
   SECOND_PRICE
 }
-
-
-// const wrongBids = [{ buyerId: "A", bids: [12, 35, "A", 150] }, { buyerId: "B", bids: [130] }]
-// console.log(findBuyerAndWinningPrice(SECOND_PRICE, wrongBids, 100))
-// const usualBids = [
-//   { buyerId: "A", "bids": [110, 130] },
-//   { buyerId: "B", "bids": [] },
-//   { buyerId: "C", "bids": [125] },
-//   { buyerId: "D", "bids": [105, 115, 90] },
-//   { buyerId: "E", "bids": [132, 135, 140] }
-// ]
-
-// throw an error
-// console.log(findBuyerAndWinningPrice("third_price", usualBids, 100))
-//throw an error
-// console.log(findBuyerAndWinningPrice(SECOND_PRICE, usualBids))
-// E - 130
-// console.log(findBuyerAndWinningPrice(SECOND_PRICE, usualBids, 100))
-// console.log(findBuyerAndWinningPrice(0, usualBids, 100))
-// console.log(findBuyerAndWinningPrice(2, usualBids, 100))
-// // Error because bids under reserved price
-// console.log(findBuyerAndWinningPrice(usualBids, 1000))
-// // Error because no buyer
-// console.log(findBuyerAndWinningPrice([], 100))
-// console.log()
