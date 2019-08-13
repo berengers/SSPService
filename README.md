@@ -1,10 +1,10 @@
-# Teads Test
+# SSP Service
 
 This project is a minimal viable product of a supply side platform.
 
 ## Getting Started
 
-Place yourself in the directory "TeadsTest".
+Place yourself in the directory "SSPService".
 Start by installing the dependencies by running.
 
 ```
